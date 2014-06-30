@@ -36,6 +36,16 @@ class SimpleTest(LexerTest):
 			(';', ';')
 		]
 
+class BitVectTest(LexerTest):
+	def __init__(self):
+		super(LexerTest, self).__init__()
+		self.input = '''
+			12bv13
+		'''
+		self.expect = [
+			('BITVECTOR', {'value': 12, 'size': 13}),
+		]
+
 class InvalidTokenTest(LexerTest):
 	def runTest(self):
 		input = '''
@@ -59,5 +69,6 @@ class InvalidTokenTest(LexerTest):
 def createSuite():
 	cases = []
 	cases.append(SimpleTest())
+	cases.append(BitVectTest())
 	cases.append(InvalidTokenTest())
 	return unittest.TestSuite(cases)

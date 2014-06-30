@@ -86,7 +86,7 @@ bitvect_pattern = re.compile('(\d+)bv(\d+)')
 def t_BITVECTOR(t):
 	r'\d+bv\d+'
 	matched = bitvect_pattern.match(t.value)
-	t.value = {'value': matched.group(1), 'size': matched.group(2)}
+	t.value = {'value': int(matched.group(1)), 'size': int(matched.group(2))}
 	return t
 
 t_ignore = ' \t'
