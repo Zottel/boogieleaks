@@ -36,6 +36,19 @@ class SimpleTest(LexerTest):
 			(';', ';')
 		]
 
+class NumberTest(LexerTest):
+	def __init__(self):
+		super(LexerTest, self).__init__()
+		self.input = '''
+			A := 123;
+		'''
+		self.expect = [
+			('ID', 'A'),
+			('ASSIGN', ':='),
+			('NUMBER', 123),
+			(';', ';')
+		]
+
 class BitVectTest(LexerTest):
 	def __init__(self):
 		super(LexerTest, self).__init__()
@@ -45,6 +58,18 @@ class BitVectTest(LexerTest):
 		self.expect = [
 			('BITVECTOR', {'value': 12, 'size': 13}),
 		]
+
+class BitVectFailTest(LexerTest):
+	def runTest(self):
+		self.input = '''
+			12bv2
+		'''
+		self.expect = [
+			('BITVECTOR', {'value': 12, 'size': 2}),
+		]
+		#(ValueError, "Line 2: 12bv2, Bitvector value too big")
+		with self.assertRaises(ValueError):
+			self.lexExpect(self.input, self.expect)
 
 class InvalidTokenTest(LexerTest):
 	def runTest(self):
@@ -69,6 +94,8 @@ class InvalidTokenTest(LexerTest):
 def createSuite():
 	cases = []
 	cases.append(SimpleTest())
+	cases.append(NumberTest())
 	cases.append(BitVectTest())
+	cases.append(BitVectFailTest())
 	cases.append(InvalidTokenTest())
 	return unittest.TestSuite(cases)

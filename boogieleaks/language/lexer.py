@@ -41,8 +41,9 @@ reserved = {
 literals = "*{}=[]();:,+-!%/<>"
 
 tokens = [
+	'ID',
 	'BITVECTOR',
-	'STRING'
+	'STRING',
 	# Operators
 	'OP_EQUIV',
 	'OP_IMPL',
@@ -53,7 +54,8 @@ tokens = [
 	'OP_REL',
 	'OP_CONCAT',
 	'OP_ADD',
-	'OP_QSEP'
+	'OP_QSEP',
+	'BITVECT_TYPE'
 ] + list(reserved.values())
 
 def t_ID(t):
@@ -67,7 +69,6 @@ t_OP_IMPL = r'==>'
 t_OP_OR = r'\|\|'
 t_OP_AND = r'\&\&'
 t_ASSIGN = r':='
-t_NUMBER = r'\d'
 
 t_OP_REL = r'==|!=|<=|>=|<:'
 
@@ -76,18 +77,26 @@ t_OP_ADD = '\+'
 
 t_QSEP = '::'
 
-
-def t_STRING(t):
-	r'"[^"]*"'
-	t.value = t.value[1:-1]
-	return t
+t_BITVECT_TYPE = r'bv\d+'
 
 bitvect_pattern = re.compile('(\d+)bv(\d+)')
 def t_BITVECTOR(t):
 	r'\d+bv\d+'
 	matched = bitvect_pattern.match(t.value)
 	t.value = {'value': int(matched.group(1)), 'size': int(matched.group(2))}
+	if not t.value['value'] < 2 ** t.value['size']:
+		raise ValueError, 'Line %d: %dbv%d, Bitvector value too big' % (t.lineno, t.value['value'], t.value['size'])
 	# TODO: Validate value < 2**size
+	return t
+
+def t_NUMBER(t):
+	r'\d+'
+	t.value = int(t.value)
+	return t
+
+def t_STRING(t):
+	r'"[^"]*"'
+	t.value = t.value[1:-1]
 	return t
 
 t_ignore = ' \t'

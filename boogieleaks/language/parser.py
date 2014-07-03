@@ -24,20 +24,143 @@ def p_declist(p):
 		p[0] = [p[1]] + p[2]
 
 def p_decl(p):
-	'''decl : TypeDecl
-	        | ConstantDecl
-	        | FunctionDecl
-	        | AxiomDecl
-	        | VarDecl
-	        | ProcedureDecl
-	        | ImplementationDecl'''
+	'''decl : typedecl
+	        | constantdecl
+	        | functiondecl
+	        | axiomdecl
+	        | vardecl
+	        | proceduredecl
+	        | implementationdecl'''
 	p[0] = p[1]
+
+def p_typedecl(p):
+	'''typedecl : typeconstructor
+	            | typesynonym'''
+	p[0] = p[1]
+
+def p_typeconstructor(p):
+	'''typeconstructor : TYPE ID ';'
+	                   | TYPE ID idlist ';'
+	                   | TYPE finite ID ';'
+	                   | TYPE finite ID idlist ';'
+	                   | TYPE attrlist ID ';'
+	                   | TYPE attrlist ID idlist ';'
+	                   | TYPE attrlist finite ID ';'
+	                   | TYPE attrlist finite ID idlist ';' '''
+	#TODO
+	pass
+
+def p_typesynonym(p):
+	'''typesynonym : TYPE ID '=' type ';'
+	               | TYPE ID idlist '=' type ';'
+	               | TYPE attrlist ID '=' type ';'
+	               | TYPE attrlist ID idlist '=' type ';' '''
+	#TODO
+	pass
+
+def p_type(p):
+	''' type : typeatom
+	         | maptype
+	         | ID
+	         | ID typectorargs'''
+	#TODO
+	pass
+
+def p_typeatom(p):
+	'''typeatom : BOOL
+	            | INT
+	            | BITVECT_TYPE
+	            | '(' type ')' '''
+	#TODO
+	pass
+
+def p_maptype(p):
+	'''maptype : '[' typelist ']' type
+	           | typeargs '[' typelist ']' type'''
+	#TODO
+	pass
+
+def p_typeargs(p):
+	'''typeargs : '<' idlist '>' '''
+	#TODO
+	pass
+
+def p_typectorargs(p):
+	'''typectorargs : typeatom
+	                | typeatom typectorargs
+	                | ID
+	                | ID typectorargs
+	                | maptype'''
+	#TODO
+	pass
+
+def p_constantdecl(p):
+	'''constantdecl : CONST idstype orderspec ';'
+	                | CONST UNIQUE idstype orderspec ';'
+	                | CONST attrlist idstype orderspec ';'
+	                | CONST attrlist UNIQUE idstype orderspec ';' '''
+	#TODO
+	pass
+
+def p_idstype(p):
+	'''idstype : idlist ':' type'''
+	#TODO
+	pass
+
+def p_functiondecl(p):
+	'''functiondecl : FUNCTION ID fsig ';'
+	                | FUNCTION attrlist ID fsig ';'
+	                | FUNCTION ID fsig '{' expr '}'
+	                | FUNCTION attrlist ID fsig '{' expr '}' '''
+	#TODO
+	pass
+
+def p_fsig(p):
+	'''fsig : '(' ')' RETURNS '(' farg ')'
+	        | '(' farglist ')' RETURNS '(' farg ')'
+	        | typeargs '(' ')' RETURNS '(' farg ')'
+	        | typeargs '(' farglist ')' RETURNS '(' farg ')' '''
+	#TODO
+	pass
+
+def p_farg(p):
+	''' farg : type
+	         | ID ':' type '''
+	#TODO
+	pass
+
+def p_farglist(p):
+	''' farglist : farg
+	             | farg ',' farglist '''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[3]
+
+def p_typelist(p):
+	'''typelist : type
+	            | type ',' typelist'''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[3]
+
+def p_idlist(p):
+	'''idlist : ID
+	          | ID ',' idlist'''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[3]
 
 
 def p_attrlist(p):
 	'''attrlist : attr
 	            | attr attrlist'''
-	pass #TODO
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[2]
 
 def p_attr(p):
 	'''attr : '{' ':' ID attrarg '}' '''
@@ -152,6 +275,7 @@ def p_E9(p):
 	       | NUMBER
 	       | BITVECTOR
 	       | ID
+	       | ID '(' ')'
 	       | ID '(' exprlist ')'
 	       | OLD '(' expr ')'
 	       | '(' FORALL typeargs idstype QSEP trigattr expr ')'
