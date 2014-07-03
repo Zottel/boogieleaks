@@ -54,7 +54,7 @@ tokens = [
 	'OP_REL',
 	'OP_CONCAT',
 	'OP_ADD',
-	'OP_QSEP',
+	'QSEP',
 	'BITVECT_TYPE'
 ] + list(reserved.values())
 

@@ -41,12 +41,12 @@ def p_typedecl(p):
 def p_typeconstructor(p):
 	'''typeconstructor : TYPE ID ';'
 	                   | TYPE ID idlist ';'
-	                   | TYPE finite ID ';'
-	                   | TYPE finite ID idlist ';'
+	                   | TYPE FINITE ID ';'
+	                   | TYPE FINITE ID idlist ';'
 	                   | TYPE attrlist ID ';'
 	                   | TYPE attrlist ID idlist ';'
-	                   | TYPE attrlist finite ID ';'
-	                   | TYPE attrlist finite ID idlist ';' '''
+	                   | TYPE attrlist FINITE ID ';'
+	                   | TYPE attrlist FINITE ID idlist ';' '''
 	#TODO
 	pass
 
@@ -137,6 +137,14 @@ def p_farglist(p):
 	else:
 		p[0] = [p[1]] + p[3]
 
+def p_idstypelist(p):
+	''' idstypelist : idstype
+	                | idstype ',' idstypelist '''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[3]
+
 def p_typelist(p):
 	'''typelist : type
 	            | type ',' typelist'''
@@ -163,8 +171,17 @@ def p_attrlist(p):
 		p[0] = [p[1]] + p[2]
 
 def p_attr(p):
-	'''attr : '{' ':' ID attrarg '}' '''
+	'''attr : '{' ':' ID '}'
+	        | '{' ':' ID attrarglist '}' '''
 	pass #TODO
+
+def p_attrarglist(p):
+	'''attrarglist : attrarg
+	               | attrarg ',' attrarglist '''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[3]
 
 def p_attrarg(p):
 	'''attrarg : expr
@@ -174,6 +191,8 @@ def p_attrarg(p):
 def p_exprlist(p):
 	''' exprlist : expr
 	             | expr ',' exprlist'''
+	pass #TODO
+
 def p_expr(p):
 	'''expr : E0'''
 	pass #TODO
@@ -278,13 +297,153 @@ def p_E9(p):
 	       | ID '(' ')'
 	       | ID '(' exprlist ')'
 	       | OLD '(' expr ')'
-	       | '(' FORALL typeargs idstype QSEP trigattr expr ')'
-	       | '(' FORALL idstype QSEP trigattr expr ')'
-	       | '(' EXISTS typeargs idstype QSEP trigattr expr ')'
-	       | '(' EXISTS idstype QSEP trigattr expr ')'
+	       | '(' FORALL typeargs idstypelist QSEP expr ')'
+	       | '(' FORALL idstypelist QSEP expr ')'
+	       | '(' EXISTS typeargs idstypelist QSEP expr ')'
+	       | '(' EXISTS idstypelist QSEP expr ')'
+	       | '(' FORALL typeargs idstypelist QSEP trigattr expr ')'
+	       | '(' FORALL idstypelist QSEP trigattr expr ')'
+	       | '(' EXISTS typeargs idstypelist QSEP trigattr expr ')'
+	       | '(' EXISTS idstypelist QSEP trigattr expr ')'
 	       | '(' expr ')' '''
-	#TODO: continue...
+	#TODO: Split (QUANTOR ...) maybe?
+	#TODO
 	pass
+
+def p_trigattr(p):
+	'''trigattr : trigger
+	            | attr'''
+	pass #TODO
+
+def p_axiomdecl(p):
+	'''axiomdecl : AXIOM expr ';'
+	             | AXIOM attrlist expr ';' '''
+	pass #TODO
+
+def p_vardecl(p):
+	'''vardecl : VAR idstypewherelist ';'
+	           | VAR attrlist idstypewherelist '''
+	pass #TODO
+
+def p_idstypewherelist(p):
+	'''idstypewherelist : idstypewhere
+	                    | idstypewhere ',' idstypewherelist'''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[3]
+
+def p_idstypewhere(p):
+	'''idstypewhere : idstype
+	                | idstype whereclause'''
+	pass #TODO
+
+def p_proceduredecl(p):
+	'''proceduredecl : PROCEDURE ID psig ';'
+	                 | PROCEDURE ID psig ';' speclist
+	                 | PROCEDURE attrlist ID psig ';'
+	                 | PROCEDURE attrlist ID psig ';' speclist
+	                 | PROCEDURE ID psig body
+	                 | PROCEDURE ID psig speclist body
+	                 | PROCEDURE attrlist ID psig body
+	                 | PROCEDURE attrlist ID psig speclist body'''
+	pass #TODO
+
+def p_psig(p):
+	'''psig : '(' ')'
+	        | '(' ')' outparameters
+	        | '(' idstypewherelist ')'
+	        | '(' idstypewherelist ')' outparameters
+	        | typeargs '(' ')'
+	        | typeargs '(' ')' outparameters
+	        | typeargs '(' idstypewherelist ')'
+	        | typeargs '(' idstypewherelist ')' outparameters '''
+	pass #TODO
+
+def p_outparameters(p):
+	'''outparameters : RETURNS '(' ')'
+	                 | RETURNS '(' idstypewherelist ')' '''
+	pass #TODO
+
+def p_speclist(p):
+	'''speclist : spec
+	            | spec speclist'''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[2]
+
+def p_spec(p):
+	'''spec : REQUIRES expr ';'
+	        | FREE REQUIRES expr ';'
+	        | MODIFIES ';'
+	        | MODIFIES idlist ';'
+	        | FREE MODIFIES ';'
+	        | FREE MODIFIES idlist ';'
+	        | ENSURES expr ';'
+	        | FREE ENSURES expr ';' '''
+	pass #TODO
+
+def p_implementationdecl(p):
+	'''implementationdecl : IMPLEMENTATION ID isig
+	                      | IMPLEMENTATION ID isig bodylist
+	                      | IMPLEMENTATION attrlist ID isig
+	                      | IMPLEMENTATION attrlist ID isig bodylist '''
+	pass #TODO
+
+def p_isig(p):
+	'''isig : '(' ')'
+	        | '(' ')' outparameters
+	        | '(' idstypelist ')'
+	        | '(' idstypelist ')' outparameters
+	        | typeargs '(' ')'
+	        | typeargs '(' ')' outparameters
+	        | typeargs '(' idstypelist ')'
+	        | typeargs '(' idstypelist ')' outparameters '''
+	pass #TODO
+
+def p_body(p):
+	'''body : '{' stmtlist '}'
+	        | '{' localvardecllist stmtlist '}' '''
+	pass #TODO
+
+def p_localvardecllist(p):
+	'''localvardecllist : localvardecl
+	                    | localvardecl localvardecllist '''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[2]
+
+def p_localvardecl(p):
+	'''localvardecl : VAR idstypewherelist ';'
+	                | VAR attrlist idstypewherelist ';' '''
+	pass #TODO
+
+def p_stmtlist(p):
+	'''stmtlist :
+	            | lempty
+	            | lstmtlist
+	            | lstmtlist lempty'''
+	pass #TODO
+
+def p_lstmtlist(p):
+	'''lstmtlist : lstmt
+	             | lstmt lstmtlist'''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[2]
+
+def p_lstmt(p):
+	'''lstmt : stmt
+	         | ID ':' lstmt '''
+	pass #TODO
+
+def p_lempty(p):
+	'''lempty : ID ':'
+	          | ID ':' lempty'''
+	pass #TODO
 
 def p_error(p):
 	print("Parsing error: Syntax error in the input at '%s', line %d." % (p.value, p.lineno))
