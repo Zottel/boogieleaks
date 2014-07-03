@@ -38,7 +38,7 @@ reserved = {
 	'while' : 'WHILE'
 }
 
-literals = "*{}=[]();:,+-!%*/<>"
+literals = "*{}=[]();:,+-!%/<>"
 
 tokens = [
 	'BITVECTOR',
@@ -87,6 +87,7 @@ def t_BITVECTOR(t):
 	r'\d+bv\d+'
 	matched = bitvect_pattern.match(t.value)
 	t.value = {'value': int(matched.group(1)), 'size': int(matched.group(2))}
+	# TODO: Validate value < 2**size
 	return t
 
 t_ignore = ' \t'
