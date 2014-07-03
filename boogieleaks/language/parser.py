@@ -48,6 +48,9 @@ def p_attrarg(p):
 	           | STRING'''
 	pass #TODO
 
+def p_exprlist(p):
+	''' exprlist : expr
+	             | expr ',' exprlist'''
 def p_expr(p):
 	'''expr : E0'''
 	pass #TODO
@@ -132,6 +135,32 @@ def p_E7(p):
 	''' E7 : E8
 	       | '!' E7
 	       | '-' E7'''
+
+def p_E8(p):
+	''' E8 : E9
+	       | E9 '[' exprlist ']'
+	       | E9 '[' exprlist ASSIGN expr ']'
+	       | E9 '[' NUMBER ':' NUMBER ']' '''
+	if len(p) == 2:
+		p[0] = p[1]
+	else:
+		pass #TODO
+
+def p_E9(p):
+	''' E9 : FALSE
+	       | TRUE
+	       | NUMBER
+	       | BITVECTOR
+	       | ID
+	       | ID '(' exprlist ')'
+	       | OLD '(' expr ')'
+	       | '(' FORALL typeargs idstype QSEP trigattr expr ')'
+	       | '(' FORALL idstype QSEP trigattr expr ')'
+	       | '(' EXISTS typeargs idstype QSEP trigattr expr ')'
+	       | '(' EXISTS idstype QSEP trigattr expr ')'
+	       | '(' expr ')' '''
+	#TODO: continue...
+	pass
 
 def p_error(p):
 	print("Parsing error: Syntax error in the input at '%s', line %d." % (p.value, p.lineno))
