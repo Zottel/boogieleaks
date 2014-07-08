@@ -53,7 +53,7 @@ tokens = [
 	'NUMBER',
 	'OP_REL',
 	'OP_CONCAT',
-	'OP_ADD',
+	'PARSEP',
 	'QSEP',
 	'BITVECT_TYPE'
 ] + list(reserved.values())
@@ -70,10 +70,12 @@ t_OP_OR = r'\|\|'
 t_OP_AND = r'\&\&'
 t_ASSIGN = r':='
 
-t_OP_REL = r'==|!=|<=|>=|<:'
+#TODO CHECK IF PARSEP IS NEEDED IN HERE -> CHANGE PARSER
+t_OP_REL = r'==|!=|<=|>='
 
 t_OP_CONCAT = '\+\+'
-t_OP_ADD = '\+'
+
+t_PARSEP = '<:'
 
 t_QSEP = '::'
 

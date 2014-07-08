@@ -1,8 +1,12 @@
 
 class Program:
 	def __init__(self, declarations):
+		self.declarations = declarations
 		#TODO: sort declarations into type, procedure etc....
 		pass
+	
+	def __eq__(self, other): 
+		return self.__dict__ == other.__dict__
 
 class Type:
 	pass
@@ -23,4 +27,10 @@ class Procedure:
 	pass
 
 class Implementation:
+	pass
+
+class Attribute:
+	pass
+
+class Expression:
 	pass

@@ -240,7 +240,8 @@ def p_EAnd(p):
 
 def p_E3(p):
 	'''E3 : E4
-	      | E4 OP_REL E4'''
+	      | E4 OP_REL E4
+	      | E4 PARSEP E4'''
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
@@ -248,7 +249,7 @@ def p_E3(p):
 
 def p_E4(p):
 	'''E4 : E5
-	      | E4 OP_REL E5'''
+	      | E4 OP_CONCAT E5'''
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
@@ -402,6 +403,14 @@ def p_isig(p):
 	        | typeargs '(' idstypelist ')' outparameters '''
 	pass #TODO
 
+def p_bodylist(p):
+	'''bodylist : body
+	            | body bodylist'''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[2]
+	
 def p_body(p):
 	'''body : '{' stmtlist '}'
 	        | '{' localvardecllist stmtlist '}' '''
@@ -443,6 +452,121 @@ def p_lstmt(p):
 def p_lempty(p):
 	'''lempty : ID ':'
 	          | ID ':' lempty'''
+	pass #TODO
+
+def p_stmt(p):
+	'''stmt : ASSERT expr ';'
+	        | ASSUME expr ';'
+	        | HAVOC idlist ';'
+	        | lhslist ASSIGN exprlist ';'
+	        | CALL ID '(' ')' ';'
+	        | CALL ID '(' exprlist ')' ';'
+	        | CALL idlist ASSIGN ID '(' ')' ';'
+	        | CALL idlist ASSIGN ID '(' exprlist ')' ';'
+	        | CALL FORALL ID '(' ')' ';'
+	        | CALL FORALL ID '(' wildcardexprlist ')' ';'
+	        | ifstmt
+	        | WHILE '(' wildcardexpr ')' blockstmt
+	        | WHILE '(' wildcardexpr ')' loopinvlist blockstmt
+	        | BREAK ';'
+	        | BREAK ID ';'
+	        | RETURN ';'
+	        | GOTO idlist ';' '''
+	pass #TODO
+
+def p_lhslist(p):
+	'''lhslist : lhs
+	           | lhs ',' lhslist'''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[3]
+
+def p_lhs(p):
+	''' lhs : ID
+	        | ID mapselectlist'''
+	pass #TODO
+
+def p_mapselectlist(p):
+	'''mapselectlist : '[' exprlist ']'
+	                 | '[' exprlist ']' mapselectlist '''
+	#TODO: lol nope
+	if(len(p) == 4):
+		p[0] = [p[2]]
+	else:
+		p[0] = [p[2]] + p[4]
+
+def p_wildcardexprlist(p):
+	'''wildcardexprlist : wildcardexpr
+	                    | wildcardexpr ',' wildcardexprlist'''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[3]
+
+def p_wildcardexpr(p):
+	'''wildcardexpr : expr
+	                | '*' '''
+	pass #TODO
+
+def p_blockstmt(p):
+	'''blockstmt : '{' stmtlist '}' '''
+	pass #TODO
+
+def p_ifstmt(p):
+	'''ifstmt : IF '(' wildcardexpr ')' blockstmt
+	          |  IF '(' wildcardexpr ')' blockstmt else '''
+	pass #TODO
+
+def p_else(p):
+	'''else : ELSE blockstmt
+	        | ELSE ifstmt '''
+	pass #TODO
+
+def p_loopinvlist(p):
+	'''loopinvlist : loopinv
+	               | loopinv loopinvlist'''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[2]
+
+def p_loopinv(p):
+	'''loopinv : INVARIANT expr ';'
+	           | FREE INVARIANT expr ';' '''
+	pass #TODO
+
+def p_orderspec(p):
+	'''orderspec :
+	             | COMPLETE
+	             | parentinfo
+	             | parentinfo COMPLETE '''
+	pass #TODO
+
+def p_parentinfo(p):
+	'''parentinfo : PARSEP
+	              | PARSEP parentedgelist '''
+	pass #TODO
+
+def p_parentedgelist(p):
+	'''parentedgelist : parentedge
+	                  | parentedge ',' parentedgelist'''
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[3]
+
+def p_parentedge(p):
+	'''parentedge : ID
+	              | UNIQUE ID'''
+	pass #TODO
+
+def p_whereclause(p):
+	'''whereclause : WHERE expr'''
+	pass #TODO
+
+def p_trigger(p):
+	'''trigger : '{' exprlist '}' '''
 	pass #TODO
 
 def p_error(p):
