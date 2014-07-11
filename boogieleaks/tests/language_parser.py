@@ -36,7 +36,13 @@ class ParseProcedure(ParseTest):
 				    b, c, d: bv3;
 			}
 		''',
-		Program([None]))
+		Program([Procedure(id = 'bla',
+		                   body = Body(statements = [],
+		                               localvariables = [LocalVariable('a', 'int'),
+		                                                 LocalVariable('b', 'bv3'),
+		                                                 LocalVariable('c', 'bv3'),
+		                                                 LocalVariable('d', 'bv3')]))])
+		)
 
 def createSuite():
 	cases = []

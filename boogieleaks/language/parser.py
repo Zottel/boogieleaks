@@ -59,20 +59,25 @@ def p_typesynonym(p):
 	pass
 
 def p_type(p):
-	''' type : typeatom
-	         | maptype
-	         | ID
-	         | ID typectorargs'''
-	#TODO
-	pass
+	'''type : typeatom
+	        | maptype '''
+	p[0] = p[1]
+
+def p_type_id(p):
+	'''type : ID
+	        | ID typectorargs'''
+	#TODO: don't ignore typectorargs
+	p[0] = p[1]
 
 def p_typeatom(p):
 	'''typeatom : BOOL
 	            | INT
-	            | BITVECT_TYPE
-	            | '(' type ')' '''
-	#TODO
-	pass
+	            | BITVECT_TYPE '''
+	p[0] = p[1]
+
+def p_typeatom_braces(p):
+	'''typeatom : '(' type ')' '''
+	pass #TODO
 
 def p_maptype(p):
 	'''maptype : '[' typelist ']' type
