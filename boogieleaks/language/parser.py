@@ -323,11 +323,7 @@ def p_axiomdecl(p):
 def p_vardecl(p):
 	'''vardecl : VAR idstypewherelist ';'
 	           | VAR attrlist idstypewherelist ';' '''
-	p[0] = []
-	idstypewherelist = p[len(p) - 2]
-	for type in idstypewherelist:
-		p[0] += map((lamba x: LocalVariable(x, type[1])), type[0])
-	print(p[0])
+	pass #TODO
 
 def p_idstypewherelist(p):
 	'''idstypewherelist : idstypewhere
@@ -346,13 +342,23 @@ def p_idstypewhere(p):
 def p_proceduredecl(p):
 	'''proceduredecl : PROCEDURE ID psig ';'
 	                 | PROCEDURE ID psig ';' speclist
-	                 | PROCEDURE attrlist ID psig ';'
-	                 | PROCEDURE attrlist ID psig ';' speclist
 	                 | PROCEDURE ID psig body
-	                 | PROCEDURE ID psig speclist body
+	                 | PROCEDURE ID psig speclist body '''
+	if p[4] == ';':
+		pass #TODO
+	else:
+		p[0] = Procedure(p[2], body = p[len(p) - 1])
+
+def p_proceduredeclattr(p):
+	'''proceduredecl : PROCEDURE attrlist ID psig ';'
+	                 | PROCEDURE attrlist ID psig ';' speclist
 	                 | PROCEDURE attrlist ID psig body
 	                 | PROCEDURE attrlist ID psig speclist body'''
-	pass #TODO
+	if p[5] == ';':
+		pass #TODO
+	else:
+		p[0] = Procedure(p[3].value, body = p[len(p) - 1])
+
 
 def p_psig(p):
 	'''psig : '(' ')'
@@ -418,27 +424,35 @@ def p_bodylist(p):
 def p_body(p):
 	'''body : '{' stmtlist '}'
 	        | '{' localvardecllist stmtlist '}' '''
-	pass #TODO
+	if len(p) == 4:
+		p[0] = Body(statements = p[2])
+	else:
+		p[0] = Body(statements = p[3], localvariables = p[2])
 
 def p_localvardecllist(p):
 	'''localvardecllist : localvardecl
 	                    | localvardecl localvardecllist '''
 	if(len(p) == 2):
-		p[0] = [p[1]]
+		p[0] = p[1]
 	else:
-		p[0] = [p[1]] + p[2]
+		p[0] = p[1] + p[2]
 
 def p_localvardecl(p):
 	'''localvardecl : VAR idstypewherelist ';'
 	                | VAR attrlist idstypewherelist ';' '''
-	pass #TODO
+	p[0] = []
+	idstypewherelist = p[len(p) - 2]
+	for type in idstypewherelist:
+		for var in type[0]:
+			p[0].append(LocalVariable(var, type[1]))
 
 def p_stmtlist(p):
 	'''stmtlist :
 	            | lempty
 	            | lstmtlist
 	            | lstmtlist lempty'''
-	pass #TODO
+	#TODO: We ignore lempty - since it's probably only required when working with GOTO
+	p[0] = p[1] if len(p) > 1 else []
 
 def p_lstmtlist(p):
 	'''lstmtlist : lstmt
@@ -451,12 +465,13 @@ def p_lstmtlist(p):
 def p_lstmt(p):
 	'''lstmt : stmt
 	         | ID ':' lstmt '''
-	pass #TODO
+	p[0] = p[len(p) - 1]
 
 def p_lempty(p):
 	'''lempty : ID ':'
 	          | ID ':' lempty'''
-	pass #TODO
+	#TODO: We ignore lempty - since it's probably only required when working with GOTO
+	p[0] = []
 
 def p_stmt(p):
 	'''stmt : ASSERT expr ';'

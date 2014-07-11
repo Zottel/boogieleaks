@@ -5,7 +5,7 @@ class Program:
 		#TODO: sort declarations into type, procedure etc....
 		pass
 	
-	def __eq__(self, other): 
+	def __eq__(self, other):
 		return self.__dict__ == other.__dict__
 
 class Type:
@@ -30,7 +30,7 @@ class Var:
 	pass #TODO
 
 class Procedure:
-	def __init__(self, body):
+	def __init__(self, id, body = None):
 		self.body = body
 
 class Body:
