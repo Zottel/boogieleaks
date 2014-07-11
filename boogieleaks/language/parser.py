@@ -104,8 +104,7 @@ def p_constantdecl(p):
 
 def p_idstype(p):
 	'''idstype : idlist ':' type'''
-	#TODO
-	pass
+	p[0] = (p[1], p[3])
 
 def p_functiondecl(p):
 	'''functiondecl : FUNCTION ID fsig ';'
@@ -323,8 +322,12 @@ def p_axiomdecl(p):
 
 def p_vardecl(p):
 	'''vardecl : VAR idstypewherelist ';'
-	           | VAR attrlist idstypewherelist '''
-	pass #TODO
+	           | VAR attrlist idstypewherelist ';' '''
+	p[0] = []
+	idstypewherelist = p[len(p) - 2]
+	for type in idstypewherelist:
+		p[0] += map((lamba x: LocalVariable(x, type[1])), type[0])
+	print(p[0])
 
 def p_idstypewherelist(p):
 	'''idstypewherelist : idstypewhere
@@ -337,7 +340,8 @@ def p_idstypewherelist(p):
 def p_idstypewhere(p):
 	'''idstypewhere : idstype
 	                | idstype whereclause'''
-	pass #TODO
+	# TODO: The "whereclause" is ignored
+	p[0] = p[1]
 
 def p_proceduredecl(p):
 	'''proceduredecl : PROCEDURE ID psig ';'
