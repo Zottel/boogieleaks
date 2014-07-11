@@ -37,5 +37,10 @@ def createSuite():
 		examples += filter(boogiematch.match, filenames)
 	
 	#TODO: Create tests for examples
+#	for example in examples:
+#		with open(example) as f:
+#			program = f.read()
+#			expected = Program([]) #TODO
+#			suites.append(boogieleaks.tests.language_parser.ParseTest(program,expected)
 	
 	return unittest.TestSuite(suites)
