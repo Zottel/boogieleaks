@@ -195,11 +195,14 @@ def p_attrarg(p):
 def p_exprlist(p):
 	''' exprlist : expr
 	             | expr ',' exprlist'''
-	pass #TODO
+	if(len(p) == 2):
+		p[0] = [p[1]]
+	else:
+		p[0] = [p[1]] + p[3]
 
 def p_expr(p):
 	'''expr : E0'''
-	pass #TODO
+	p[0] = p[1]
 
 def p_E0(p):
 	'''E0 : E1
@@ -265,8 +268,10 @@ def p_E5(p):
 	      | E5 '-' E6'''
 	if len(p) == 2:
 		p[0] = p[1]
+	elif p[2] == '+':
+		p[0] = Addition(p[1], p[3])
 	else:
-		pass #TODO
+		p[0] = Substraction(p[1], p[3])
 
 def p_E6(p):
 	'''E6 : E7
@@ -282,6 +287,10 @@ def p_E7(p):
 	''' E7 : E8
 	       | '!' E7
 	       | '-' E7'''
+	if len(p) == 2:
+		p[0] = p[1]
+	else:
+		pass #TODO
 
 def p_E8(p):
 	''' E8 : E9
@@ -293,26 +302,34 @@ def p_E8(p):
 	else:
 		pass #TODO
 
+def p_E9_number(p):
+	''' E9 : NUMBER '''
+	p[0] = Number(p[1])
+
+def p_E9_id(p):
+	'''E9 : ID
+	      | ID '(' ')'
+	      | ID '(' exprlist ')' '''
+	if len(p) == 2:
+		p[0] = Variable(p[1])
+	else:
+		pass #TODO
+
 def p_E9(p):
-	''' E9 : FALSE
-	       | TRUE
-	       | NUMBER
-	       | BITVECTOR
-	       | ID
-	       | ID '(' ')'
-	       | ID '(' exprlist ')'
-	       | OLD '(' expr ')'
-	       | '(' FORALL typeargs idstypelist QSEP expr ')'
-	       | '(' FORALL idstypelist QSEP expr ')'
-	       | '(' EXISTS typeargs idstypelist QSEP expr ')'
-	       | '(' EXISTS idstypelist QSEP expr ')'
-	       | '(' FORALL typeargs idstypelist QSEP trigattr expr ')'
-	       | '(' FORALL idstypelist QSEP trigattr expr ')'
-	       | '(' EXISTS typeargs idstypelist QSEP trigattr expr ')'
-	       | '(' EXISTS idstypelist QSEP trigattr expr ')'
-	       | '(' expr ')' '''
+	'''E9 : FALSE
+	      | TRUE
+	      | BITVECTOR
+	      | OLD '(' expr ')'
+	      | '(' FORALL typeargs idstypelist QSEP expr ')'
+	      | '(' FORALL idstypelist QSEP expr ')'
+	      | '(' EXISTS typeargs idstypelist QSEP expr ')'
+	      | '(' EXISTS idstypelist QSEP expr ')'
+	      | '(' FORALL typeargs idstypelist QSEP trigattr expr ')'
+	      | '(' FORALL idstypelist QSEP trigattr expr ')'
+	      | '(' EXISTS typeargs idstypelist QSEP trigattr expr ')'
+	      | '(' EXISTS idstypelist QSEP trigattr expr ')'
+	      | '(' expr ')' '''
 	#TODO: Split (QUANTOR ...) maybe?
-	#TODO
 	pass
 
 def p_trigattr(p):
@@ -478,11 +495,26 @@ def p_lempty(p):
 	#TODO: We ignore lempty - since it's probably only required when working with GOTO
 	p[0] = []
 
-def p_stmt(p):
+def p_stmt_assertssume(p):
 	'''stmt : ASSERT expr ';'
-	        | ASSUME expr ';'
-	        | HAVOC idlist ';'
-	        | lhslist ASSIGN exprlist ';'
+	        | ASSUME expr ';' '''
+	if p[1] == 'assert':
+		p[0] = Assertion(p[2])
+	else:
+		p[0] = Assumption(p[2])
+
+def p_stmt_assign(p):
+	'''stmt : lhslist ASSIGN exprlist ';' '''
+	if len(p[1]) != len(p[3]):
+		raise ValueError, 'Line %d: %dbv%d, Bitvector value too big' % (t.lineno, t.value['value'], t.value['size'])
+	else:
+		assignments = {}
+		for i, a in enumerate(p[1]):
+			assignments[a] = p[3][i]
+		p[0] = Assignment(assignments)
+
+def p_stmt(p):
+	'''stmt : HAVOC idlist ';'
 	        | CALL ID '(' ')' ';'
 	        | CALL ID '(' exprlist ')' ';'
 	        | CALL idlist ASSIGN ID '(' ')' ';'
@@ -507,9 +539,12 @@ def p_lhslist(p):
 		p[0] = [p[1]] + p[3]
 
 def p_lhs(p):
-	''' lhs : ID
-	        | ID mapselectlist'''
-	pass #TODO
+	'''lhs : ID
+	       | ID mapselectlist'''
+	if len(p) == 2:
+		p[0] = p[1]
+	else:
+		pass #TODO: do something with mapselectlist
 
 def p_mapselectlist(p):
 	'''mapselectlist : '[' exprlist ']'

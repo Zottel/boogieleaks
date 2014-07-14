@@ -56,6 +56,35 @@ class LocalVariable(ASTNode):
 	def __str__(self):
 		return "(var %s %s)" % (self.id, self.type)
 
+class Statement(ASTNode):
+	def __init__(self):
+		pass
+	
+	def __str__(self):
+		return "(statement %s)" % (self.__dict__)
+
+class Assertion(Statement):
+	def __init__(self, condition):
+		self.condition = condition
+	
+	def __str__(self):
+		return "(assertion %s)" % (self.condition)
+
+
+class Assumption(Statement):
+	def __init__(self, condition):
+		self.condition = condition
+	
+	def __str__(self):
+		return "(assumption %s)" % (self.condition)
+
+class Assignment(Statement):
+	def __init__(self, assignments = {}):
+		self.assignments = assignments
+	
+	def __str__(self):
+		return "(assignment %s)" % (self.assignments)
+
 class Implementation(ASTNode):
 	pass #TODO
 
@@ -64,3 +93,31 @@ class Attribute(ASTNode):
 
 class Expression(ASTNode):
 	pass #TODO
+
+class Addition(Expression):
+	def __init__(self, op1, op2):
+		self.op1 = op1
+		self.op2 = op2
+	
+	def __repr__(self):
+		return "(+ %s %s)" % (self.op1, self.op2)
+
+class Substraction(Expression):
+	def __init__(self, op1, op2):
+		self.op1 = op1
+		self.op2 = op2
+	
+	def __repr__(self):
+		return "(- %s %s)" % (self.op1, self.op2)
+
+class Number(Expression):
+	def __init__(self, value):
+		self.value = value
+
+class Variable(Expression):
+	def __init__(self, name):
+		self.name = name
+	
+	def __repr__(self):
+		return "(variable %s)" % (self.name)
+
