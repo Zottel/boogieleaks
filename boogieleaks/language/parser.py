@@ -280,8 +280,12 @@ def p_E6(p):
 	      | E6 '%' E7'''
 	if len(p) == 2:
 		p[0] = p[1]
-	else:
-		pass #TODO
+	elif p[2] == '*':
+	  p[0] = Multiplication(p[1], p[3])
+	elif p[2] == '/':
+	  p[0] = Division(p[1], p[3])
+	else: # %
+		p[0] = Modulo(p[1], p[3])
 
 def p_E7(p):
 	''' E7 : E8
@@ -289,8 +293,11 @@ def p_E7(p):
 	       | '-' E7'''
 	if len(p) == 2:
 		p[0] = p[1]
+	elif p[1] == '!':
+	  p[0] = Not(p[2])
 	else:
-		pass #TODO
+	  p[0] = Minus(p[2])
+		
 
 def p_E8(p):
 	''' E8 : E9
@@ -314,11 +321,18 @@ def p_E9_id(p):
 		p[0] = Variable(p[1])
 	else:
 		pass #TODO
+		
+def p_E9_bool(p):
+	'''E9 : FALSE
+	      | TRUE '''
+	if p[1] == 'true':
+		p[0] = Boolean('true')
+	else:
+		p[0] = Boolean('false')	
+
 
 def p_E9(p):
-	'''E9 : FALSE
-	      | TRUE
-	      | BITVECTOR
+	'''E9 : BITVECTOR
 	      | OLD '(' expr ')'
 	      | '(' FORALL typeargs idstypelist QSEP expr ')'
 	      | '(' FORALL idstypelist QSEP expr ')'

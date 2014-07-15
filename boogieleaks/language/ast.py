@@ -109,6 +109,44 @@ class Substraction(Expression):
 	
 	def __repr__(self):
 		return "(- %s %s)" % (self.op1, self.op2)
+		
+class Multiplication(Expression):
+	def __init__(self, op1, op2):
+		self.op1 = op1
+		self.op2 = op2
+	
+	def __repr__(self):
+		return "(* %s %s)" % (self.op1, self.op2)
+		
+class Division(Expression):
+	def __init__(self, op1, op2):
+		self.op1 = op1
+		self.op2 = op2
+	
+	def __repr__(self):
+		return "(/ %s %s)" % (self.op1, self.op2)
+		
+class Modulo(Expression):
+	def __init__(self, op1, op2):
+		self.op1 = op1
+		self.op2 = op2
+	
+	def __repr__(self):
+		return "(% %s %s)" % (self.op1, self.op2)
+		
+class Not(Expression):
+	def __init__(self, op):
+		self.op = op
+	
+	def __repr__(self):
+		return "(! %s %s)" % (self.op)
+		
+class Minus(Expression):
+	def __init__(self, op):
+		self.op = op
+	
+	def __repr__(self):
+		return "(- %s %s)" % (self.op)		
 
 class Number(Expression):
 	def __init__(self, value):
@@ -120,4 +158,11 @@ class Variable(Expression):
 	
 	def __repr__(self):
 		return "(variable %s)" % (self.name)
+		
+class Boolean(Expression):
+	def __init__(self, value):
+		self.value = value
+	
+	def __repr__(self):
+		return "(boolean %s)" % (self.value)
 

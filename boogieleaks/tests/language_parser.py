@@ -80,7 +80,82 @@ class ParseAssignment2(ParseTest):
 		                   body = Body(statements = [Assignment({'a': Substraction(Number(1), Number(3))})],
 		                               localvariables = []))])
 		)
+		
+class ParseMultiplication(ParseTest):
+	def runTest(self):
+		self.parseExpect('''
+			procedure bla() {
+				a := 1 * 3;
+			}
+		''',
+		Program([Procedure(id = 'bla',
+		                   body = Body(statements = [Assignment({'a': Multiplication(Number(1), Number(3))})],
+		                               localvariables = []))])
+		)
 
+		
+class ParseDivision(ParseTest):
+	def runTest(self):
+		self.parseExpect('''
+			procedure bla() {
+				a := 1 / 3;
+			}
+		''',
+		Program([Procedure(id = 'bla',
+		                   body = Body(statements = [Assignment({'a': Division(Number(1), Number(3))})],
+		                               localvariables = []))])
+		)
+		
+				
+class ParseModulo(ParseTest):
+	def runTest(self):
+		self.parseExpect('''
+			procedure bla() {
+				a := 6 % 2;
+			}
+		''',
+		Program([Procedure(id = 'bla',
+		                   body = Body(statements = [Assignment({'a': Modulo(Number(6), Number(2))})],
+		                               localvariables = []))])
+		)
+		
+class ParseMinus(ParseTest):
+	def runTest(self):
+		self.parseExpect('''
+			procedure bla() {
+				a := -42;
+			}
+		''',
+		Program([Procedure(id = 'bla',
+		                   body = Body(statements = [Assignment({'a': Minus(Number(42))})],
+		                               localvariables = []))])
+		)
+		
+class ParseNot(ParseTest):
+	def runTest(self):
+		self.parseExpect('''
+			procedure bla() {
+				a := !b;
+			}
+		''',
+		Program([Procedure(id = 'bla',
+		                   body = Body(statements = [Assignment({'a': Not(Variable('b'))})],
+		                               localvariables = []))])
+		)
+		
+class ParseBoolean(ParseTest):
+	def runTest(self):
+		self.parseExpect('''
+			procedure bla() {
+				a := false;
+				b := true;
+			}
+		''',
+		Program([Procedure(id = 'bla',
+		                   body = Body(statements = [Assignment({'a': Boolean('false')}),
+		                                             Assignment({'b': Boolean('true')})],
+		                               localvariables = []))])
+		)
 
 def createSuite():
 	cases = []
@@ -89,4 +164,10 @@ def createSuite():
 	cases.append(ParseAssertion())
 	cases.append(ParseAssignment())
 	cases.append(ParseAssignment2())
+	cases.append(ParseMultiplication())
+	cases.append(ParseDivision())
+	cases.append(ParseModulo())
+	cases.append(ParseMinus())
+	cases.append(ParseNot())
+	cases.append(ParseBoolean())
 	return unittest.TestSuite(cases)
