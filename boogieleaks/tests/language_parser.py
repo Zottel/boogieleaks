@@ -52,7 +52,7 @@ class ParseAssertion(ParseTest):
 			}
 		''',
 		Program([Procedure(id = 'bla',
-		                   body = Body(statements = [Assertion(None)],
+		                   body = Body(statements = [Assertion(RelOperator('==',[Number(1),Number(2)]))],
 		                               localvariables = []))])
 		)
 
@@ -167,7 +167,8 @@ class ParseSpecs(ParseTest):
 			}
 		''',
 		Program([Procedure(id = 'blub',
-		                   specs = [],
+		                   specs = [Guarantee(RelOperator('>', [Variable('x'),Number(1)])),
+		                            Requirement(RelOperator('<', [Variable('x'),Number(2)]))],
 		                   body = Body())])
 		)
 		

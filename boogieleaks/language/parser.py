@@ -257,7 +257,9 @@ def p_E3(p):
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		pass #TODO
+		#ignoring parsep
+		#TODO: test this
+		p[0] = RelOperator(p[2], [p[1], p[3]])
 
 def p_E4(p):
 	'''E4 : E5

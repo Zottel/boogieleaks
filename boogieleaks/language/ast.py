@@ -205,3 +205,11 @@ class Operator(Expression):
 	
 	def __repr__(self):
 		return "(operator %s %s)" % (self.operator, self.variables)
+
+class RelOperator(Expression):
+	def __init__(self, operator, variables):
+		self.operator = operator
+		self.variables = variables
+	
+	def __repr__(self):
+		return "(reloperator %s %s)" % (self.operator, self.variables)
