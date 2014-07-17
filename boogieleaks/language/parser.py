@@ -210,7 +210,7 @@ def p_E0(p):
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		pass #TODO
+		p[0] = Operator('equiv', [p[1], p[3]])
 
 def p_E1(p):
 	'''E1 : E2
@@ -218,7 +218,7 @@ def p_E1(p):
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		pass #TODO
+		p[0] = Operator('impl', [p[1], p[3]])
 
 def p_E2(p):
 	'''E2 : E3
@@ -343,10 +343,13 @@ def p_E9(p):
 	      | '(' FORALL typeargs idstypelist QSEP trigattr expr ')'
 	      | '(' FORALL idstypelist QSEP trigattr expr ')'
 	      | '(' EXISTS typeargs idstypelist QSEP trigattr expr ')'
-	      | '(' EXISTS idstypelist QSEP trigattr expr ')'
-	      | '(' expr ')' '''
+	      | '(' EXISTS idstypelist QSEP trigattr expr ')' '''
 	#TODO: Split (QUANTOR ...) maybe?
 	pass
+	
+def p_E9_bracket(p):
+	'''E9 : '(' expr ')' '''
+	p[0] = p[2]
 
 def p_trigattr(p):
 	'''trigattr : trigger

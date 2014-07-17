@@ -90,6 +90,40 @@ class InvalidTokenTest(LexerTest):
 		self.assertEqual(out.getvalue().strip(),
 		                 "Parsing error: Illegal character '~'.",
 		                 msg = "Did not get expected lexer error message")
+		                 
+		                 
+class OperatorTest(LexerTest):
+	def __init__(self):
+		super(LexerTest, self).__init__()
+		self.input = '''
+			 A <==> B;
+			 A ==> B;
+			 A || B;
+			 A && B;
+			 A ++ B;
+		'''
+		self.expect = [
+			('ID', 'A'),
+			('OP_EQUIV', '<==>'),
+			('ID', 'B'),
+			(';', ';'),
+			('ID', 'A'),
+			('OP_IMPL', '==>'),
+			('ID', 'B'),
+			(';', ';'),
+			('ID', 'A'),
+			('OP_OR', '||'),
+			('ID', 'B'),
+			(';', ';'),
+			('ID', 'A'),
+			('OP_AND', '&&'),
+			('ID', 'B'),
+			(';', ';'),
+			('ID', 'A'),
+			('OP_CONCAT', '++'),
+			('ID', 'B'),
+			(';', ';')
+		]
 
 def createSuite():
 	cases = []
@@ -98,4 +132,5 @@ def createSuite():
 	cases.append(BitVectTest())
 	cases.append(BitVectFailTest())
 	cases.append(InvalidTokenTest())
+	cases.append(OperatorTest())
 	return unittest.TestSuite(cases)

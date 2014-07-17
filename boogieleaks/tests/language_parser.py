@@ -170,6 +170,22 @@ class ParseSpecs(ParseTest):
 		                   specs = [],
 		                   body = Body())])
 		)
+		
+class ParseOperator(ParseTest):
+	def runTest(self):
+		self.parseExpect('''
+			procedure bla() {
+				assert(a <==> b);
+				assert(a ==> b);
+				assert(a <==> (b <==> c));
+			}
+		''',
+		Program([Procedure(id = 'bla',
+		                   body = Body(statements = [Assertion(Operator('equiv', [Variable('a'), Variable('b')])),
+		                   													 Assertion(Operator('impl', [Variable('a'), Variable('b')])),
+		                   													 Assertion(Operator('equiv', [Variable('a'), Operator('equiv', [Variable('b'), Variable('c')])]))],
+		                               localvariables = []))])
+		)
 
 def createSuite():
 	cases = []
@@ -184,5 +200,6 @@ def createSuite():
 	cases.append(ParseMinus())
 	cases.append(ParseNot())
 	cases.append(ParseBoolean())
+	cases.append(ParseOperator())
 	cases.append(ParseSpecs())
 	return unittest.TestSuite(cases)

@@ -64,8 +64,8 @@ def t_ID(t):
 	return t
 
 # TODO: Unicode maybe?
-t_OP_EQUIV = r'<==>'
-t_OP_IMPL = r'==>'
+#t_OP_EQUIV = r'<==>'
+#t_OP_IMPL = r'==>'
 t_OP_OR = r'\|\|'
 t_OP_AND = r'\&\&'
 t_ASSIGN = r':='
@@ -100,6 +100,14 @@ def t_STRING(t):
 	r'"[^"]*"'
 	t.value = t.value[1:-1]
 	return t
+	
+def t_OP_EQUIV(t):
+	r'<==>'
+	return t
+	
+def t_OP_IMPL(t):
+  r'==>'
+  return t
 
 t_ignore = ' \t'
 t_ignore_COMMENT = r'\/\/.*'
