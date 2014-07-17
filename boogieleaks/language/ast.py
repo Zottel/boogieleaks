@@ -10,8 +10,9 @@ class Program(ASTNode):
 	def __init__(self, declarations):
 		#print(declarations)
 		self.declarations = declarations
+		
 		#TODO: sort declarations into type, procedure etc....
-		pass
+		self.procedures = filter(lambda x: isinstance(x, Procedure), declarations)
 
 class Type(ASTNode):
 	pass #TODO
@@ -35,10 +36,39 @@ class Var(ASTNode):
 	pass #TODO
 
 class Procedure(ASTNode):
-	def __init__(self, id, body = None):
+	def __init__(self, id, body = None, specs = []):
 		#print("(procedure %s, %s)" % (id, body))
 		self.id = id
 		self.body = body
+		
+		self.requirements = []
+		self.guarantees = []
+		for spec in specs:
+			if isinstance(spec, Requirement):
+				self.requirements.append(spec)
+			if isinstance(spec, Guarantee):
+				self.guarantees.append(spec)
+	
+	def __repr__(self):
+		return "(procedure %s %s %s %s)" % (self.id,
+		                                    self.body,
+		                                    self.requirements,
+		                                    self.guarantees)
+
+class Requirement(ASTNode):
+	def __init__(self, condition):
+		self.condition = condition
+	
+	def __repr__(self):
+		return "(requirement %s)" % self.condition
+
+class Guarantee(ASTNode):
+	def __init__(self, condition):
+		self.condition = condition
+	
+	def __repr__(self):
+		return "(guarantee %s)" % self.condition
+
 
 class Body(ASTNode):
 	def __init__(self, statements = [], localvariables = []):
@@ -109,7 +139,7 @@ class Substraction(Expression):
 	
 	def __repr__(self):
 		return "(- %s %s)" % (self.op1, self.op2)
-		
+
 class Multiplication(Expression):
 	def __init__(self, op1, op2):
 		self.op1 = op1
@@ -117,7 +147,7 @@ class Multiplication(Expression):
 	
 	def __repr__(self):
 		return "(* %s %s)" % (self.op1, self.op2)
-		
+
 class Division(Expression):
 	def __init__(self, op1, op2):
 		self.op1 = op1
@@ -125,7 +155,7 @@ class Division(Expression):
 	
 	def __repr__(self):
 		return "(/ %s %s)" % (self.op1, self.op2)
-		
+
 class Modulo(Expression):
 	def __init__(self, op1, op2):
 		self.op1 = op1
@@ -133,14 +163,14 @@ class Modulo(Expression):
 	
 	def __repr__(self):
 		return "(% %s %s)" % (self.op1, self.op2)
-		
+
 class Not(Expression):
 	def __init__(self, op):
 		self.op = op
 	
 	def __repr__(self):
 		return "(! %s %s)" % (self.op)
-		
+
 class Minus(Expression):
 	def __init__(self, op):
 		self.op = op
@@ -159,10 +189,10 @@ class Variable(Expression):
 	def __repr__(self):
 		return "(variable %s)" % (self.name)
 		
+
 class Boolean(Expression):
 	def __init__(self, value):
 		self.value = value
 	
 	def __repr__(self):
 		return "(boolean %s)" % (self.value)
-

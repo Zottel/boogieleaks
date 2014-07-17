@@ -248,6 +248,8 @@ def p_EAnd(p):
 def p_E3(p):
 	'''E3 : E4
 	      | E4 OP_REL E4
+	      | E4 '<' E4
+	      | E4 '>' E4
 	      | E4 PARSEP E4'''
 	if len(p) == 2:
 		p[0] = p[1]
@@ -383,7 +385,8 @@ def p_proceduredecl(p):
 	if p[4] == ';':
 		pass #TODO
 	else:
-		p[0] = Procedure(p[2], body = p[len(p) - 1])
+		specs = p[4] if len(p) == 6 else []
+		p[0] = Procedure(p[2], body = p[len(p) - 1], specs = specs)
 
 def p_proceduredeclattr(p):
 	'''proceduredecl : PROCEDURE attrlist ID psig ';'
@@ -393,7 +396,7 @@ def p_proceduredeclattr(p):
 	if p[5] == ';':
 		pass #TODO
 	else:
-		p[0] = Procedure(p[3].value, body = p[len(p) - 1])
+		p[0] = Procedure(p[3], body = p[len(p) - 1])
 
 
 def p_psig(p):
@@ -420,15 +423,21 @@ def p_speclist(p):
 	else:
 		p[0] = [p[1]] + p[2]
 
-def p_spec(p):
+def p_spec_requires(p):
 	'''spec : REQUIRES expr ';'
-	        | FREE REQUIRES expr ';'
-	        | MODIFIES ';'
+	        | FREE REQUIRES expr ';' '''
+	p[0] = Requirement(p[len(p) - 2])
+
+def p_spec_ensures(p):
+	'''spec : ENSURES expr ';'
+	        | FREE ENSURES expr ';' '''
+	p[0] = Guarantee(p[len(p) - 2])
+
+def p_spec(p):
+	'''spec : MODIFIES ';'
 	        | MODIFIES idlist ';'
 	        | FREE MODIFIES ';'
-	        | FREE MODIFIES idlist ';'
-	        | ENSURES expr ';'
-	        | FREE ENSURES expr ';' '''
+	        | FREE MODIFIES idlist ';' '''
 	pass #TODO
 
 def p_implementationdecl(p):

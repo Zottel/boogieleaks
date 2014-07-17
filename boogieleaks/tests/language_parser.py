@@ -157,6 +157,20 @@ class ParseBoolean(ParseTest):
 		                               localvariables = []))])
 		)
 
+class ParseSpecs(ParseTest):
+	def runTest(self):
+		self.parseExpect('''
+			procedure blub(x: int)
+			ensures x > 1;
+			requires x < 2;
+			{
+			}
+		''',
+		Program([Procedure(id = 'blub',
+		                   specs = [],
+		                   body = Body())])
+		)
+
 def createSuite():
 	cases = []
 	cases.append(ParseEmpty())
@@ -170,4 +184,5 @@ def createSuite():
 	cases.append(ParseMinus())
 	cases.append(ParseNot())
 	cases.append(ParseBoolean())
+	cases.append(ParseSpecs())
 	return unittest.TestSuite(cases)
