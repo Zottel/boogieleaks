@@ -222,28 +222,31 @@ def p_E1(p):
 
 def p_E2(p):
 	'''E2 : E3
-	      | E3 EOr
-	      | E3 EAnd'''
+	      | E3 EOr'''
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		pass #TODO
+		p[0] = Operator('or', [p[1], p[2]])
+
+def p_E2_or(p):
+	'''E2 : E3 EAnd'''
+	p[0] = Operator('and', [p[1], p[2]])
 
 def p_EOr(p):
 	'''EOr : OP_OR E3
 	       | OP_OR E3 EOr'''
 	if len(p) == 3:
-		pass #TODO Single OR
+		p[0] = p[2]
 	else:
-		pass #TODO Chain case
+		p[0] = Operator('or', [p[2], p[3]])
 
 def p_EAnd(p):
 	'''EAnd : OP_AND E3
 	       | OP_AND E3 EAnd'''
 	if len(p) == 3:
-		pass #TODO Single And
+		p[0] = p[2]
 	else:
-		pass #TODO Chain case
+		p[0] = Operator('and', [p[2], p[3]])
 
 def p_E3(p):
 	'''E3 : E4
