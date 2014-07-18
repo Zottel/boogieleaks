@@ -210,7 +210,7 @@ def p_E0(p):
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		pass #TODO
+		p[0] = Operator('equiv', [p[1], p[3]])
 
 def p_E1(p):
 	'''E1 : E2
@@ -218,32 +218,35 @@ def p_E1(p):
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		pass #TODO
+		p[0] = Operator('impl', [p[1], p[3]])
 
 def p_E2(p):
 	'''E2 : E3
-	      | E3 EOr
-	      | E3 EAnd'''
+	      | E3 EOr'''
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		pass #TODO
+		p[0] = Operator('or', [p[1], p[2]])
+
+def p_E2_or(p):
+	'''E2 : E3 EAnd'''
+	p[0] = Operator('and', [p[1], p[2]])
 
 def p_EOr(p):
 	'''EOr : OP_OR E3
 	       | OP_OR E3 EOr'''
 	if len(p) == 3:
-		pass #TODO Single OR
+		p[0] = p[2]
 	else:
-		pass #TODO Chain case
+		p[0] = Operator('or', [p[2], p[3]])
 
 def p_EAnd(p):
 	'''EAnd : OP_AND E3
 	       | OP_AND E3 EAnd'''
 	if len(p) == 3:
-		pass #TODO Single And
+		p[0] = p[2]
 	else:
-		pass #TODO Chain case
+		p[0] = Operator('and', [p[2], p[3]])
 
 def p_E3(p):
 	'''E3 : E4
@@ -254,7 +257,9 @@ def p_E3(p):
 	if len(p) == 2:
 		p[0] = p[1]
 	else:
-		pass #TODO
+		#ignoring parsep
+		#TODO: test this
+		p[0] = RelOperator(p[2], [p[1], p[3]])
 
 def p_E4(p):
 	'''E4 : E5
@@ -343,10 +348,13 @@ def p_E9(p):
 	      | '(' FORALL typeargs idstypelist QSEP trigattr expr ')'
 	      | '(' FORALL idstypelist QSEP trigattr expr ')'
 	      | '(' EXISTS typeargs idstypelist QSEP trigattr expr ')'
-	      | '(' EXISTS idstypelist QSEP trigattr expr ')'
-	      | '(' expr ')' '''
+	      | '(' EXISTS idstypelist QSEP trigattr expr ')' '''
 	#TODO: Split (QUANTOR ...) maybe?
 	pass
+	
+def p_E9_bracket(p):
+	'''E9 : '(' expr ')' '''
+	p[0] = p[2]
 
 def p_trigattr(p):
 	'''trigattr : trigger

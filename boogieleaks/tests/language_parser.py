@@ -52,7 +52,7 @@ class ParseAssertion(ParseTest):
 			}
 		''',
 		Program([Procedure(id = 'bla',
-		                   body = Body(statements = [Assertion(None)],
+		                   body = Body(statements = [Assertion(RelOperator('==',[Number(1),Number(2)]))],
 		                               localvariables = []))])
 		)
 
@@ -167,8 +167,28 @@ class ParseSpecs(ParseTest):
 			}
 		''',
 		Program([Procedure(id = 'blub',
-		                   specs = [],
+		                   specs = [Guarantee(RelOperator('>', [Variable('x'),Number(1)])),
+		                            Requirement(RelOperator('<', [Variable('x'),Number(2)]))],
 		                   body = Body())])
+		)
+		
+class ParseOperator(ParseTest):
+	def runTest(self):
+		#TODO:And and Or need brackets for some reason
+		self.parseExpect('''
+			procedure bla() {
+				assert(a <==> b);
+				assert(a ==> b);
+				assert(a <==> (b <==> c));
+				assert((a || b) && c);
+			}
+		''',
+		Program([Procedure(id = 'bla',
+		                   body = Body(statements = [Assertion(Operator('equiv', [Variable('a'), Variable('b')])),
+		                   													 Assertion(Operator('impl', [Variable('a'), Variable('b')])),
+		                   													 Assertion(Operator('equiv', [Variable('a'), Operator('equiv', [Variable('b'), Variable('c')])])),
+		                   													 Assertion(Operator('and', [Operator('or', [Variable('a'), Variable('b')]),Variable('c')]))],
+		                               localvariables = []))])
 		)
 
 def createSuite():
@@ -184,5 +204,6 @@ def createSuite():
 	cases.append(ParseMinus())
 	cases.append(ParseNot())
 	cases.append(ParseBoolean())
+	cases.append(ParseOperator())
 	cases.append(ParseSpecs())
 	return unittest.TestSuite(cases)
