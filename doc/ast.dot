@@ -1,0 +1,9 @@
+digraph G{
+"Program" -> "Procedure";
+"Procedure" -> "Id";
+"Procedure" -> "Body";
+"Procedure" -> "Requirements";
+"Procedure" -> "Guarantees";
+"Body" -> "Statements";
+"Body" -> "Variables";
+}
