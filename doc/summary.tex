@@ -128,14 +128,33 @@ p[0] = p[2]
 \end{lstlisting}
 
 \section{Verification}
-After the parser was been implemented an abstract syntax tree (AST) from the program was build. But because Boogie is a very comprehensive language we decide to implement at first only the important part of the language in the AST to get a simple program to work.
+After the parser was been implemented an abstract syntax tree (AST) from the program was build. But because Boogie is a very comprehensive language we decide to implement at first only the important part of the language in the AST to get a simple program to work. Figure \ref{fig:ast} shows such an AST.
 
-% TODO AST image
+\begin{figure}[ht]
+  \centering
+    \includegraphics[height=4cm]{ast}
+    \caption{Abstract syntax tree.}
+  \label{fig:ast}
+\end{figure}
 
-% TODO text about verification 
+For the verification formulas for each variable assignments are generated. Listing \ref{lst:ver} shows an example how this will look like for a simple Boogie program.
+  
+\begin{lstlisting}[caption=Formula generation, label=lst:ver, mathescape]
+procedure p(z:int) 
+{ 
+  requires z>=3;      $E = {z_0 >= 3}$ 
+  var x:int; 
+  x = 2;              $E = E \cup {x_0 = 2}$ 
+  x = x+z;            $E = E \cup {x_1 = x_0 + z_0}$ 
+  assert x < 42;      $SAT(E \wedge \neg(x_1 < 42)) $ 
+} 
+\end{lstlisting}
+
+At the point $SAT(E \wedge \neg(x_1 < 42))$ the formula is given to the SMT solver Z3. We decided to use Z3 because it is easy to use out of Python.
+
+% TODO insert output of z3
 
 \section{Conclusion}
-
 % TODO bla blub interesantes project blub wenig zeit bla..... 
 
 
