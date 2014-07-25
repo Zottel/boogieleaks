@@ -5,6 +5,7 @@
 \usepackage{pxfonts}
 \usepackage{units}
 \usepackage{url}
+\usepackage[section]{placeins}
 \usepackage[pdftex]{graphicx}
 \usepackage{listings}
 \graphicspath{{./img/}}
@@ -26,7 +27,7 @@
 \maketitle 
 
 \section{Introduction}
-In a short sentences the goal of our project is the re-implementation of the Boogie verification condition generator. 
+In a short sentence the goal of our project is the re-implementation of the Boogie verification condition generator. 
 
 
 
@@ -63,7 +64,7 @@ procedure Find(a: int, b: int) returns (k: int)
 
 Our goal is the part of this pipeline where the verification conditions are generated from the Intermediate Verification Language Boogie. This can be divided into two sub-parts: the parsing of the Boogie program code and the generation of verification conditions. The verification conditions should then be solved by a SMT solver, e.g. Z3.
 
-We decided to use Python as programming language for this project, because it overs a lot of great and easy to use libraries. 
+We decided to use Python as programming language for this project, because it offers a lot of great and easy to use libraries. 
 
 \begin{figure}[ht]
   \centering
@@ -84,9 +85,9 @@ For the parsing of Boogie programs the Python package PLY is used. PLY stands fo
   \label{fig:e9}
 \end{figure}
 
-The implementation of the parser costs most the time because the conversion of all the Boogie grammar rules was very time-consuming and error-prone. Figure \ref{fig:e9} shows such a rule and listing \ref{lst:e9} shows a part of the corresponding code
+The implementation of the parser costs most of the time because the conversion of all the Boogie grammar rules was very time-consuming and error-prone. Figure \ref{fig:e9} shows such a rule and listing \ref{lst:e9} shows a part of the corresponding code.
 
-\begin{lstlisting}[caption=Boogie program example, label=lst:e9]
+\begin{lstlisting}[caption=Parser code example, label=lst:e9]
 def p_E9_number(p):
 ''' E9 : NUMBER '''
 p[0] = Number(p[1])
@@ -128,7 +129,7 @@ p[0] = p[2]
 \end{lstlisting}
 
 \section{Verification}
-After the parser was been implemented an abstract syntax tree (AST) from the program was build. But because Boogie is a very comprehensive language we decide to implement at first only the important part of the language in the AST to get a simple program to work. Figure \ref{fig:ast} shows such an AST.
+After the parser had been implemented an abstract syntax tree (AST) from, the program was build. But because Boogie is a very comprehensive language we decide to implement at first only the important parts of the language in the AST to get a simple program to work. Figure \ref{fig:ast} shows such an AST. 
 
 \begin{figure}[ht]
   \centering
@@ -137,8 +138,9 @@ After the parser was been implemented an abstract syntax tree (AST) from the pro
   \label{fig:ast}
 \end{figure}
 
-For the verification formulas for each variable assignments are generated. Listing \ref{lst:ver} shows an example how this will look like for a simple Boogie program.
-  
+For all variable assignments the corresponding verification formulas are generated. Listing \ref{lst:ver} shows an example how this will look like for a simple Boogie program.
+
+\FloatBarrier
 \begin{lstlisting}[caption=Formula generation, label=lst:ver, mathescape]
 procedure p(z:int) 
 { 
@@ -150,12 +152,13 @@ procedure p(z:int)
 } 
 \end{lstlisting}
 
-At the point $SAT(E \wedge \neg(x_1 < 42))$ the formula is given to the SMT solver Z3. We decided to use Z3 because it is easy to use out of Python.
+At the point the formula $SAT(E \wedge \neg(x_1 < 42))$ is given to the SMT solver Z3. We decided to use Z3 because it is easy to use out of Python.
 
 % TODO insert output of z3
 
 \section{Conclusion}
-% TODO bla blub interesantes project blub wenig zeit bla..... 
+% TODO bla blub interesantes project blub wenig zeit bla.....
+This was an interesting project, but we didn't have enough time to finish it. 
 
 
 \bibliographystyle{alpha} 
